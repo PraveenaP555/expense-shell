@@ -36,22 +36,22 @@ CHECK_ROOT(){
 echo "script started executing at: $(date)" | tee -a $LOG_FILE
 CHECK_ROOT
 
-dnf install mysql-server -y &>>LOG_FILE
+dnf install mysql-server -y &>>$LOG_FILE
 VALIDATE $? "Installing MySQL Server"
 
-systemctl enable mysqld &>>LOG_FILE
+systemctl enable mysqld &>>$LOG_FILE
 VALIDATE $? "Enabled MySQL Server"
 
-systemctl start mysqld &>>LOG_FILE
+systemctl start mysqld &>>$LOG_FILE
 VALIDATE $? "Started MySQL Server"
 
 
-mysql -h mysql.praveenadaws.online -u root -pExpenseApp@1 -e 'show databases;' &>>LOG_FILE
+mysql -h mysql.praveenadaws.online -u root -pExpenseApp@1 -e 'show databases;' &>>$LOG_FILE
 if [ $? -ne 0 ]
 then    
-    echo "MySQL root password is not setup,settimg now" &>>LOG_FILE
-    mysql_secure_installation --set-root-pass ExpenseApp@1 &>>LOG_FILE
+    echo "MySQL root password is not setup,settimg now" &>>$LOG_FILE
+    mysql_secure_installation --set-root-pass ExpenseApp@1 &>>$LOG_FILE
     VALIDATE $? "Setting up root password"
 else
-    echo -e "MySQL root password is already setup....$Y SKIPPING $N" | tee -a LOG_FILE
+    echo -e "MySQL root password is already setup....$Y SKIPPING $N" | tee -a $LOG_FILE
 fi
