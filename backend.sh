@@ -72,8 +72,26 @@ VALIDATE $? "Extracting backend application code"
 
 
 npm install &>>$LOG_FILE
-pwd
-#cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.service 
+cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.service 
+
+#load the data before running backend
+
+dnf install mysql -y &>>$LOG_FILE
+VALIDATE $? "Installing MySQL Client"
+
+mysql -h mysql.praveenadaws.online -uroot -pExpenseApp@1 < /app/schema/backend.sql &>>$LOG_FILE
+VALIDATE $? "schema Loading"
+
+systemctl daemon-reload &>>$LOG_FILE
+VALIDATE $? "Daemon reload"
+
+systemctl enable backend &>>$LOG_FILE
+VALIDATE $? "backend enabled"
+
+systemctl restart backend &>>$LOG_FILE
+VALIDATE $? "backend restarted"
+
+
 
 
 
